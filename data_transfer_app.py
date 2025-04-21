@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 import pyperclip
 import time
 import keyboard
@@ -6,59 +7,110 @@ import threading
 import os
 
 class DataTransferApp:
+    ACCENT_COLOR = "#007acc"
+    BG_COLOR = "#ffffff"
+    FONT_FAMILY = "Segoe UI"
+    FONT_SIZE = 10
+
     def __init__(self, master):
         self.master = master
         self.master.title("Data Transfer App")
-        self.master.geometry("300x400")  # Set default window size to be wider
-        
-        self.mode_var = tk.StringVar(value="copy")  # Default mode is copy
+        self.master.geometry("320x550")
+        self.master.configure(bg=self.BG_COLOR)
 
-        self.copy_mode_button = tk.Radiobutton(master, text="Copy Mode", variable=self.mode_var, value="copy")
-        self.copy_mode_button.pack(pady=10)
+        self.style = ttk.Style()
+        self.style.theme_use('default')
 
-        self.paste_mode_button = tk.Radiobutton(master, text="Paste Mode", variable=self.mode_var, value="paste")
-        self.paste_mode_button.pack(pady=10)
+        # Configure style for ttk buttons with rounded corners and accent color
+        self.style.configure('Accent.TButton',
+                             background=self.ACCENT_COLOR,
+                             foreground='white',
+                             font=(self.FONT_FAMILY, self.FONT_SIZE),
+                             borderwidth=0,
+                             focusthickness=3,
+                             focuscolor='none',
+                             padding=6)
+        self.style.map('Accent.TButton',
+                       background=[('active', '#005a9e')],
+                       foreground=[('active', 'white')])
+
+        # Configure style for ttk entry
+        self.style.configure('TEntry',
+                             font=(self.FONT_FAMILY, self.FONT_SIZE),
+                             padding=5)
+
+        # Configure style for labels
+        label_font = (self.FONT_FAMILY, self.FONT_SIZE)
+
+        # Add WELCOME header label at the very top
+        self.welcome_label = tk.Label(master, text="WELCOME", bg=self.BG_COLOR, font=(self.FONT_FAMILY, self.FONT_SIZE + 4, 'bold'))
+        self.welcome_label.pack(pady=(10, 5))
+
+        self.mode_var = tk.StringVar(value="copy")
+
+        # Add MODE section header above mode selector toggles
+        self.mode_header_label = tk.Label(master, text="MODE", bg=self.BG_COLOR, font=(self.FONT_FAMILY, self.FONT_SIZE))
+        self.mode_header_label.pack()
+
+        # Mode selection frame
+        self.mode_frame = tk.Frame(master, bg=self.BG_COLOR)
+        self.mode_frame.pack(pady=5)
+
+        # Use ttk Radiobuttons for better styling
+        self.copy_mode_button = ttk.Radiobutton(self.mode_frame, text="Copy Mode", variable=self.mode_var, value="copy",
+                                                command=self.update_mode_buttons)
+        self.copy_mode_button.pack(side=tk.LEFT, padx=10)
+
+        self.paste_mode_button = ttk.Radiobutton(self.mode_frame, text="Paste Mode", variable=self.mode_var, value="paste",
+                                                 command=self.update_mode_buttons)
+        self.paste_mode_button.pack(side=tk.LEFT, padx=10)
+
+        self.update_mode_buttons()
 
         # Controls frame
-        self.controls_frame = tk.Frame(master)
-        self.controls_frame.pack(pady=10, fill=tk.X)
-        self.controls_label = tk.Label(self.controls_frame, text="Controls")
-        self.controls_label.pack(side=tk.LEFT, padx=(0, 10))
-        self.start_button = tk.Button(self.controls_frame, text="Start", command=self.start_process_thread)
+        self.controls_frame = tk.Frame(master, bg=self.BG_COLOR)
+        self.controls_frame.pack(pady=15)
+        self.controls_label = tk.Label(self.controls_frame, text="Controls", bg=self.BG_COLOR, font=label_font)
+        self.controls_label.pack(pady=(0, 10))
+        self.start_button = ttk.Button(self.controls_frame, text="Start", command=self.start_process_thread, style='Accent.TButton')
         self.start_button.pack(side=tk.LEFT, padx=5)
-        self.pause_button = tk.Button(self.controls_frame, text="Pause", command=self.pause_process)
+        self.pause_button = ttk.Button(self.controls_frame, text="Pause", command=self.pause_process, style='Accent.TButton')
         self.pause_button.pack(side=tk.LEFT, padx=5)
-        self.stop_button = tk.Button(self.controls_frame, text="Stop", command=self.stop_process)
+        self.stop_button = ttk.Button(self.controls_frame, text="Stop", command=self.stop_process, style='Accent.TButton')
         self.stop_button.pack(side=tk.LEFT, padx=5)
 
         # Label to show current record info in paste mode
-        self.record_label = tk.Label(master, text="")
+        self.record_label = tk.Label(master, text="", bg=self.BG_COLOR, font=label_font)
         self.record_label.pack(pady=10)
 
         # Stepper frame
-        self.stepper_frame = tk.Frame(master)
-        self.stepper_frame.pack(pady=10, fill=tk.X)
-        self.stepper_label = tk.Label(self.stepper_frame, text="Stepper")
-        self.stepper_label.pack(side=tk.LEFT, padx=(0, 10))
-        self.prev_button = tk.Button(self.stepper_frame, text="Previous", command=self.prev_record)
+        self.stepper_frame = tk.Frame(master, bg=self.BG_COLOR)
+        self.stepper_frame.pack(pady=15)
+        self.stepper_label = tk.Label(self.stepper_frame, text="Stepper", bg=self.BG_COLOR, font=label_font)
+        self.stepper_label.pack(pady=(0, 10))
+        self.prev_button = ttk.Button(self.stepper_frame, text="Previous", command=self.prev_record, style='Accent.TButton')
         self.prev_button.pack(side=tk.LEFT, padx=5)
-        self.next_button = tk.Button(self.stepper_frame, text="Next", command=self.next_record)
+        self.next_button = ttk.Button(self.stepper_frame, text="Next", command=self.next_record, style='Accent.TButton')
         self.next_button.pack(side=tk.LEFT, padx=5)
 
         # File control frame
-        self.file_control_frame = tk.Frame(master)
-        self.file_control_frame.pack(pady=10, fill=tk.X)
-        self.file_control_label = tk.Label(self.file_control_frame, text="File Control")
-        self.file_control_label.pack(side=tk.LEFT, padx=(0, 10))
-        self.open_txt_button = tk.Button(self.file_control_frame, text="Open TXT File", command=self.open_txt_file)
+        self.file_control_frame = tk.Frame(master, bg=self.BG_COLOR)
+        self.file_control_frame.pack(pady=15)
+        self.file_control_label = tk.Label(self.file_control_frame, text="File Control", bg=self.BG_COLOR, font=label_font)
+        self.file_control_label.pack(pady=(0, 10))
+        self.open_txt_button = ttk.Button(self.file_control_frame, text="Open TXT File", command=self.open_txt_file, style='Accent.TButton')
         self.open_txt_button.pack(side=tk.LEFT, padx=5)
-        self.flush_button = tk.Button(self.file_control_frame, text="Flush Data", command=self.flush_data)
+        self.flush_button = ttk.Button(self.file_control_frame, text="Flush Data", command=self.flush_data, style='Accent.TButton')
         self.flush_button.pack(side=tk.LEFT, padx=5)
 
-        self.max_records_label = tk.Label(self.master, text="Max records to copy (optional):")
+        self.max_records_label = tk.Label(master, text="Max records to copy (optional):", bg=self.BG_COLOR, font=label_font)
         self.max_records_label.pack(pady=5)
-        self.max_records_entry = tk.Entry(self.master)
-        self.max_records_entry.pack(pady=5)
+        self.max_records_entry = ttk.Entry(master, style='TEntry')
+        self.max_records_entry.pack(pady=5, ipadx=5, ipady=3)
+
+        # Add footer label with welcome message
+        self.footer_label = tk.Label(master, text="developed by Navaneeth P - 2025", bg=self.BG_COLOR, font=(self.FONT_FAMILY, self.FONT_SIZE - 2))
+        self.footer_label.pack(side=tk.BOTTOM, pady=10)
 
         self.is_running = False
         self.is_paused = False
@@ -74,6 +126,15 @@ class DataTransferApp:
         keyboard.add_hotkey('shift+2', self.pause_process)
         keyboard.add_hotkey('shift+3', self.stop_process)
 
+
+    def update_mode_buttons(self):
+        # Update the appearance of mode buttons based on selection
+        if self.mode_var.get() == "copy":
+            self.copy_mode_button.state(['selected'])
+            self.paste_mode_button.state(['!selected'])
+        else:
+            self.paste_mode_button.state(['selected'])
+            self.copy_mode_button.state(['!selected'])
 
     def start_process_thread(self):
         if not self.is_running:
