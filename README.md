@@ -47,7 +47,8 @@ OR
 Locate the .exe file in the dist folder and run the application.
 
 ## 🎨 Screenshots
-![image](https://github.com/user-attachments/assets/c05cf2cd-b4b2-49c6-b7bc-4a56819aa460)
+![image](https://github.com/user-attachments/assets/e3bbe4dc-c5d2-441f-8b9b-58dc902ca9db)
+
 
 
 
