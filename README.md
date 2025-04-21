@@ -63,5 +63,6 @@ Keeps the app window always on top for easy access
 
 ## 🧑‍💻 Developed By
 Navaneeth P — 2025
+
 Feel free to connect or contribute!
 
