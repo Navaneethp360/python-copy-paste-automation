@@ -43,7 +43,9 @@ cd python-data-transfer-app
 
 ### 2. Run the App:
 You can run the application either by using python data_transfer_app.py command in cmd 
+
 OR
+
 Locate the .exe file in the dist folder and run the application.
 
 ## 🎨 Screenshots
