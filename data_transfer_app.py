@@ -126,6 +126,13 @@ class DataTransferApp:
         keyboard.add_hotkey('shift+2', self.pause_process)
         keyboard.add_hotkey('shift+3', self.stop_process)
 
+        # Bind window close event to flush data on exit
+        self.master.protocol("WM_DELETE_WINDOW", self.on_close)
+
+    def on_close(self):
+        self.flush_data()
+        self.master.destroy()
+
 
     def update_mode_buttons(self):
         # Update the appearance of mode buttons based on selection
