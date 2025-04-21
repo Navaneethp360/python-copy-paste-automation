@@ -9,7 +9,7 @@ class DataTransferApp:
     def __init__(self, master):
         self.master = master
         self.master.title("Data Transfer App")
-        self.master.geometry("300x500")  # Set default window size to be wider
+        self.master.geometry("300x400")  # Set default window size to be wider
         
         self.mode_var = tk.StringVar(value="copy")  # Default mode is copy
 
@@ -19,30 +19,41 @@ class DataTransferApp:
         self.paste_mode_button = tk.Radiobutton(master, text="Paste Mode", variable=self.mode_var, value="paste")
         self.paste_mode_button.pack(pady=10)
 
-        self.start_button = tk.Button(master, text="Start", command=self.start_process_thread)
-        self.start_button.pack(pady=10)
-
-        self.pause_button = tk.Button(master, text="Pause", command=self.pause_process)
-        self.pause_button.pack(pady=10)
-
-        self.stop_button = tk.Button(master, text="Stop", command=self.stop_process)
-        self.stop_button.pack(pady=10)
+        # Controls frame
+        self.controls_frame = tk.Frame(master)
+        self.controls_frame.pack(pady=10, fill=tk.X)
+        self.controls_label = tk.Label(self.controls_frame, text="Controls")
+        self.controls_label.pack(side=tk.LEFT, padx=(0, 10))
+        self.start_button = tk.Button(self.controls_frame, text="Start", command=self.start_process_thread)
+        self.start_button.pack(side=tk.LEFT, padx=5)
+        self.pause_button = tk.Button(self.controls_frame, text="Pause", command=self.pause_process)
+        self.pause_button.pack(side=tk.LEFT, padx=5)
+        self.stop_button = tk.Button(self.controls_frame, text="Stop", command=self.stop_process)
+        self.stop_button.pack(side=tk.LEFT, padx=5)
 
         # Label to show current record info in paste mode
         self.record_label = tk.Label(master, text="")
         self.record_label.pack(pady=10)
 
-        # Buttons for stepping in paste mode
-        self.prev_button = tk.Button(master, text="Previous", command=self.prev_record)
-        self.next_button = tk.Button(master, text="Next", command=self.next_record)
-        self.prev_button.pack(pady=5)
-        self.next_button.pack(pady=5)
+        # Stepper frame
+        self.stepper_frame = tk.Frame(master)
+        self.stepper_frame.pack(pady=10, fill=tk.X)
+        self.stepper_label = tk.Label(self.stepper_frame, text="Stepper")
+        self.stepper_label.pack(side=tk.LEFT, padx=(0, 10))
+        self.prev_button = tk.Button(self.stepper_frame, text="Previous", command=self.prev_record)
+        self.prev_button.pack(side=tk.LEFT, padx=5)
+        self.next_button = tk.Button(self.stepper_frame, text="Next", command=self.next_record)
+        self.next_button.pack(side=tk.LEFT, padx=5)
 
-        self.flush_button = tk.Button(self.master, text="Flush Data", command=self.flush_data)
-        self.flush_button.pack(pady=10)
-
-        self.open_txt_button = tk.Button(self.master, text="Open TXT File", command=self.open_txt_file)
-        self.open_txt_button.pack(pady=10)
+        # File control frame
+        self.file_control_frame = tk.Frame(master)
+        self.file_control_frame.pack(pady=10, fill=tk.X)
+        self.file_control_label = tk.Label(self.file_control_frame, text="File Control")
+        self.file_control_label.pack(side=tk.LEFT, padx=(0, 10))
+        self.open_txt_button = tk.Button(self.file_control_frame, text="Open TXT File", command=self.open_txt_file)
+        self.open_txt_button.pack(side=tk.LEFT, padx=5)
+        self.flush_button = tk.Button(self.file_control_frame, text="Flush Data", command=self.flush_data)
+        self.flush_button.pack(side=tk.LEFT, padx=5)
 
         self.max_records_label = tk.Label(self.master, text="Max records to copy (optional):")
         self.max_records_label.pack(pady=5)
@@ -110,6 +121,7 @@ class DataTransferApp:
                     f.truncate(0)
                 self.records = []
                 self.current_index = 0
+                self.max_records_entry.delete(0, tk.END)  # Clear max records input
                 print("Data file flushed successfully.")
                 self.update_record_label()
             except Exception as e:
