@@ -110,7 +110,7 @@ class DataTransferApp:
         self.max_records_entry.pack(pady=5, ipadx=5, ipady=3)
 
         # Add footer label with welcome message
-        self.footer_label = tk.Label(master, text="developed by Navaneeth P - 2025", bg=self.BG_COLOR, font=(self.FONT_FAMILY, self.FONT_SIZE - 2))
+        self.footer_label = tk.Label(master, text="Developed by: Navaneeth P - 2025", bg=self.BG_COLOR, font=(self.FONT_FAMILY, self.FONT_SIZE - 2))
         self.footer_label.pack(side=tk.BOTTOM, pady=10)
 
         self.is_running = False
