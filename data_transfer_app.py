@@ -3,11 +3,13 @@ import pyperclip
 import time
 import keyboard
 import threading
+import os
 
 class DataTransferApp:
     def __init__(self, master):
         self.master = master
         self.master.title("Data Transfer App")
+        self.master.geometry("300x500")  # Set default window size to be wider
         
         self.mode_var = tk.StringVar(value="copy")  # Default mode is copy
 
@@ -39,6 +41,9 @@ class DataTransferApp:
         self.flush_button = tk.Button(self.master, text="Flush Data", command=self.flush_data)
         self.flush_button.pack(pady=10)
 
+        self.open_txt_button = tk.Button(self.master, text="Open TXT File", command=self.open_txt_file)
+        self.open_txt_button.pack(pady=10)
+
         self.max_records_label = tk.Label(self.master, text="Max records to copy (optional):")
         self.max_records_label.pack(pady=5)
         self.max_records_entry = tk.Entry(self.master)
@@ -58,9 +63,16 @@ class DataTransferApp:
         keyboard.add_hotkey('shift+2', self.pause_process)
         keyboard.add_hotkey('shift+3', self.stop_process)
 
+
     def start_process_thread(self):
         if not self.is_running:
             threading.Thread(target=self.start_process, daemon=True).start()
+
+    def open_txt_file(self):
+        try:
+            os.startfile(self.data_file)
+        except Exception as e:
+            print(f"Failed to open file: {e}")
 
     def start_process(self):
         if self.is_paused:
