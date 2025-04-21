@@ -1,0 +1,1 @@
+pyinstaller --onefile --noconsole --icon=icon.ico data_transfer_app.py

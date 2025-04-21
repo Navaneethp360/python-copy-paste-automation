@@ -5,6 +5,7 @@ import time
 import keyboard
 import threading
 import os
+import webbrowser
 
 class DataTransferApp:
     ACCENT_COLOR = "#007acc"
@@ -110,9 +111,15 @@ class DataTransferApp:
         self.max_records_entry.pack(pady=5, ipadx=5, ipady=3)
 
         # Add footer label with welcome message
-        self.footer_label = tk.Label(master, text="Developed by: Navaneeth P - 2025", bg=self.BG_COLOR, font=(self.FONT_FAMILY, self.FONT_SIZE - 2))
+        self.footer_label = tk.Label(
+            master,
+            text="Developed by: Navaneeth P - 2025",
+            bg=self.BG_COLOR,
+            fg="blue",
+            cursor="hand2",
+            font=(self.FONT_FAMILY, self.FONT_SIZE - 2, "underline"))        
         self.footer_label.pack(side=tk.BOTTOM, pady=10)
-
+        self.footer_label.bind("<Button-1>", lambda e: webbrowser.open_new("https://github.com/Navaneethp360"))
         self.is_running = False
         self.is_paused = False
         self.data_file = "copied_data.txt"
