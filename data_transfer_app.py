@@ -17,6 +17,7 @@ class DataTransferApp:
         self.master.title("Data Transfer App")
         self.master.geometry("320x550")
         self.master.configure(bg=self.BG_COLOR)
+        root.attributes('-topmost', True)
 
         self.style = ttk.Style()
         self.style.theme_use('default')
