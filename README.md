@@ -37,9 +37,10 @@ Supports both **Copy Mode** (auto-copy from active window) and **Paste Mode** (a
 ## 🚀 Getting Started
 ### 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/python-data-transfer-app.git
+git clone https://github.com/Navaneethp360/python-data-transfer-app.git
 cd python-data-transfer-app
 ```
+
 ### 2. Run the App:
 You can run the application either by using python data_transfer_app.py command in cmd 
 OR
